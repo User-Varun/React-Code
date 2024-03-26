@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./index.css";
 
 const pizzaData = [
   {
@@ -48,7 +49,7 @@ const pizzaData = [
 
 function App() {
   return (
-    <div>
+    <div className="container">
       <Header />
       <Menu />
       <Footer />
@@ -56,18 +57,48 @@ function App() {
   );
 }
 
-function Header() {
-  return <h1>Fast React Pizza Co.</h1>;
-}
-
 function Menu() {
   return (
-    <div>
+    <main className="menu">
       <h2>Our menu</h2>
-      <Pizza />
-      <Pizza />
-      <Pizza />
+      <Pizza
+        name="Pizza focaccia"
+        ingredients="Bread with italian olive oil and rosemary"
+        photoName="pizzas/focaccia.jpg"
+        price={10}
+      />
+      <Pizza
+        name="Pizza Funghi"
+        ingredients="Tomato , mushrooms"
+        price={15}
+        photoName="pizzas/funghi.jpg"
+      />
+    </main>
+  );
+}
+function Pizza(props) {
+  return (
+    <div className="pizza">
+      <img src={props.photoName} alt={props.name} />
+
+      <div>
+        <h3>{props.name}</h3>
+        <p>{props.ingredients}</p>
+        <span>{props.price}</span>
+      </div>
     </div>
+  );
+}
+
+function Header() {
+  // const style = { color: "red", fontSize: "48px", textTransform: "uppercase" };
+  const style = {};
+  return (
+    <header className="header">
+      <h1 style={style} className>
+        Fast React Pizza Co.
+      </h1>
+    </header>
   );
 }
 
@@ -82,20 +113,12 @@ function Footer() {
   // else alert("sorry we're closed");
 
   return (
-    <footer>{new Date().toLocaleTimeString()}, We're currently open</footer>
+    <footer className="footer">
+      {new Date().toLocaleTimeString()}, We're currently open
+    </footer>
   );
 
   // React.createElement("footer", null, "We're currently open!");
-}
-
-function Pizza() {
-  return (
-    <div>
-      <img src="pizzas/focaccia.jpg" alt="pizza focaccia" />
-      <h2>Focaccia</h2>
-      <p>Bread with italian olive oil and rosemary</p>
-    </div>
-  );
 }
 
 // React v18
