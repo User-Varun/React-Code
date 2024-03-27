@@ -57,39 +57,6 @@ function App() {
   );
 }
 
-function Menu() {
-  return (
-    <main className="menu">
-      <h2>Our menu</h2>
-      <Pizza
-        name="Pizza focaccia"
-        ingredients="Bread with italian olive oil and rosemary"
-        photoName="pizzas/focaccia.jpg"
-        price={10}
-      />
-      <Pizza
-        name="Pizza Funghi"
-        ingredients="Tomato , mushrooms"
-        price={15}
-        photoName="pizzas/funghi.jpg"
-      />
-    </main>
-  );
-}
-function Pizza(props) {
-  return (
-    <div className="pizza">
-      <img src={props.photoName} alt={props.name} />
-
-      <div>
-        <h3>{props.name}</h3>
-        <p>{props.ingredients}</p>
-        <span>{props.price}</span>
-      </div>
-    </div>
-  );
-}
-
 function Header() {
   // const style = { color: "red", fontSize: "48px", textTransform: "uppercase" };
   const style = {};
@@ -102,6 +69,75 @@ function Header() {
   );
 }
 
+function Menu() {
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
+  return (
+    <main className="menu">
+      <h2>Our menu</h2>
+
+      {/* for conditional rendering with ternery operator */}
+      {numPizzas > 0 ? (
+        <React.Fragment>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from. All
+            from our stone oven, all organic, all delicious.
+          </p>
+
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </React.Fragment>
+      ) : (
+        <p>We're still working on our menu. Please come back later :)</p>
+      )}
+
+      {/* for conditional rendering with && operator  */}
+      {/* {numPizzas > 0 && (
+        <ul className="pizzas">
+          {pizzas.map((pizza) => (
+            <Pizza pizzaObj={pizza} key={pizza.name} />
+          ))}
+        </ul>
+      )} */}
+
+      {/* Rendering pizza with old method */}
+      {/* <Pizza
+        name="Pizza focaccia"
+        ingredients="Bread with italian olive oil and rosemary"
+        photoName="pizzas/focaccia.jpg"
+        price={10}
+      />
+      <Pizza
+        name="Pizza Funghi"
+        ingredients="Tomato , mushrooms"
+        price={15}
+        photoName="pizzas/funghi.jpg"
+      /> */}
+    </main>
+  );
+}
+function Pizza({ pizzaObj }) {
+  // if (pizzaObj.soldOut) return null;
+
+  return (
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
+
+      <div>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+
+        <span>{pizzaObj.soldOut ? "SOLD OUT" : pizzaObj.price}</span>
+        {/* 
+        {pizzaObj.soldOut ? <span>SOLD OUT</span> : <span>pizzaObj.price</span>} */}
+      </div>
+    </li>
+  );
+}
+
 function Footer() {
   const hour = new Date().getHours();
   const openHour = 12;
@@ -109,16 +145,41 @@ function Footer() {
   const isOpen = hour >= openHour && hour < closeHour;
   console.log(isOpen);
 
-  // if (hour >= openHour && hour < closeHour) alert("We're currently open!");
-  // else alert("sorry we're closed");
-
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()}, We're currently open
+      {isOpen ? (
+        <Order closeHour={closeHour} openHour={openHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}
+          :00
+        </p>
+      )}
     </footer>
+
+    // if (hour >= openHour && hour < closeHour) alert("We're currently open!");
+    // else alert("sorry we're closed");
+
+    // if (!isOpen){
+    //   return(  <p>
+    //           We're happy to welcome you between {openHour}:00 and {closeHour}:00
+    //         </p>
+    //   )
+    // }
   );
 
   // React.createElement("footer", null, "We're currently open!");
+}
+function Order({ closeHour, openHour }) {
+  return (
+    <div className="order">
+      <p>
+        We're open from {openHour}:00 to {closeHour}:00, Come visit us or order
+        online.
+      </p>
+      <button className="btn">Order</button>
+    </div>
+  );
 }
 
 // React v18

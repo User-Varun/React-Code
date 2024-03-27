@@ -37,7 +37,7 @@ function Avatar() {
   return (
     <img
       className="avatar"
-      src="https://images.pexels.com/photos/46160/field-clouds-sky-earth-46160.jpeg"
+      src="https://avatars.githubusercontent.com/u/135313164?s=400&u=da4e629be53cbc63384ec0c11314a2a412ba2cb8&v=4"
       alt="Varun Pawar"
     ></img>
   );
