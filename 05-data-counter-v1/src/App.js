@@ -12,55 +12,33 @@ export default function App() {
 
 function UI() {
   const [step, setStep] = useState(1);
-  const [counter, setCounter] = useState(0);
+  const [count, setCount] = useState(0);
 
-  function handleStepMinus() {
-    setStep(step - 1);
-  }
-  function handleStepPlus() {
-    setStep(step + 1);
-  }
-  function handleCounterMinus() {
-    setCounter(counter - 1);
-  }
-  function handleCounterPlus() {
-    setCounter(counter + 1);
-  }
-
-  function getCurrentDay() {
-    const now = new Date();
-    const day = now.getDay();
-    const dayName = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ][day];
-    return dayName;
-  }
+  const date = new Date(" Jun 21 2027");
+  date.setDate(date.getDate() + count);
 
   return (
-    <>
-      <div className="steps">
-        <button onClick={handleStepMinus}>-</button>
+    <div>
+      <div className="step">
+        <button onClick={() => setStep((c) => c - 1)}>-</button>
         <p>Step: {step}</p>
-        <button onClick={handleStepPlus}>+</button>
+        <button onClick={() => setStep((c) => c + 1)}>+</button>
       </div>
-      <div className="counter">
-        <button onClick={handleCounterMinus}>-</button>
-        <p>Counter: {counter}</p>
-        <button onClick={handleCounterPlus}>+</button>
+      <div className="count">
+        <button onClick={() => setCount((c) => c - step)}>-</button>
+        <p>Count: {count}</p>
+        <button onClick={() => setCount((c) => c + step)}>+</button>
       </div>
-      <div className="message">
-        <p>
-          Today is {getCurrentDay()}{" "}
-          {new Date().toLocaleString("default", { month: "short" })}{" "}
-          {new Date().getDate()} 2027
-        </p>
-      </div>
-    </>
+      <p className="message">
+        <span>
+          {count === 0
+            ? "today is "
+            : count < 0
+            ? `${Math.abs(count)} days from today is `
+            : `${count} days ago was`}
+        </span>
+        <span className="margin-left">{date.toDateString()}</span>
+      </p>
+    </div>
   );
 }
