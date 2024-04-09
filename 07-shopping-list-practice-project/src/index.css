@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.app {
+  max-width: 500px;
+  margin: 100px auto;
+}
+
+.cart-details-section {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 0px;
+  background-color: #dbb7ff;
+  border-radius: 10px;
+}
+
+.items-list {
+}
