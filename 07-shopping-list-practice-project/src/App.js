@@ -1,18 +1,24 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-const initialItems = [
-  { price: 10, itemName: "shoes", quantity: 1 },
-  { price: 100, itemName: "keyboard", quantity: 1 },
-  { price: 5000, itemName: "watch", quantity: 1 },
-];
+// const initialItems = [{ price: 10, itemName: "shoes", quantity: 1, id: 111 }];
 
 export default function App() {
+  const [cartInfo, setCartInfo] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
+  function handleTotalPrice() {
+    let calculatedtotalPrice = cartInfo.reduce(
+      (acc, cur) => acc + cur.price * cur.quantity,
+      0
+    );
+
+    return setTotalPrice(calculatedtotalPrice);
+  }
+
   function handleTotalItems() {
-    const sum = initialItems.reduce(
+    const sum = cartInfo.reduce(
       (accumulator, currentValue) =>
         accumulator + Number(currentValue.quantity),
       0
@@ -20,29 +26,23 @@ export default function App() {
     return setTotalItems(sum);
   }
 
-  function handleTotalPrice() {
-    const calculatedtotalPrice = initialItems.reduce(
-      (acc, cur) => acc + cur.price,
-      0
-    );
-
-    return setTotalPrice(calculatedtotalPrice);
-  }
-
-  function handleForm(e) {
-    e.preventDefault();
+  function handleAddItem(item) {
+    setCartInfo((items) => [...items, item]);
   }
 
   useEffect(() => {
-    handleTotalItems();
     handleTotalPrice();
+    handleTotalItems();
   });
 
   return (
     <div className="app">
       <ItemsCartDetails totalItems={totalItems} totalPrice={totalPrice} />
-      <ItemsList />
-      <AddNewItems onHandleForm={handleForm} />
+      <ItemsList cartInfo={cartInfo} setTotalItems={setTotalItems} />
+      <AddNewItems onAddItem={handleAddItem} />
+      <p className="notice">
+        The Quantity increase and decrease Feature does not work currently.{" "}
+      </p>
     </div>
   );
 }
@@ -51,22 +51,35 @@ function ItemsCartDetails({ totalItems, totalPrice }) {
   return (
     <div className="cart-details-section">
       <span>
-        Subtotal ({totalItems} Items): <strong>₹{totalPrice}</strong>
+        Subtotal (<strong>{totalItems}</strong> Items):{" "}
+        <strong>₹{totalPrice}</strong>
       </span>
     </div>
   );
 }
-function ItemsList() {
+
+function ItemsList({ cartInfo, setTotalItems }) {
   return (
     <div className="items-list">
-      {initialItems.map((item, index) => (
-        <Item item={item} index={index} key={item.itemName} />
-      ))}
+      {cartInfo.length === 0 ? (
+        <p className="empty-item-list">Add some items to see here :)</p>
+      ) : (
+        cartInfo.map((item) => (
+          <Item
+            item={item}
+            key={item.itemName}
+            cartInfo={cartInfo}
+            setTotalItems={setTotalItems}
+          />
+        ))
+      )}
     </div>
   );
 }
 
-function Item({ item, index }) {
+function Item({ item }) {
+  const [IndividualQuantity, setIndividualQuantity] = useState(item.quantity);
+
   return (
     <div className="item">
       <span className="emoji">🛒</span>
@@ -75,9 +88,19 @@ function Item({ item, index }) {
           <strong>{item.itemName}</strong>
         </span>
         <p className="quantity-section">
-          <button className="btn-change">-</button>
-          <strong>{item.quantity}</strong>{" "}
-          <button className="btn-change">+</button>
+          <button
+            className="btn-change"
+            // onClick={() => setIndividualQuantity(item.quantity--)}
+          >
+            -
+          </button>
+          <strong>{IndividualQuantity}</strong>{" "}
+          <button
+            className="btn-change"
+            // onClick={() => setIndividualQuantity(item.quantity++)}
+          >
+            +
+          </button>
         </p>
       </div>
       <span className="price">
@@ -87,59 +110,77 @@ function Item({ item, index }) {
   );
 }
 
-function AddNewItems({ onHandleForm }) {
-  const [itemName, setItemName] = useState("");
-  const [howMany, setHowMany] = useState("");
+function AddNewItems({ onAddItem }) {
+  const [itemName, setItemName] = useState();
+  const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
+  const [isopen, setIsOpen] = useState(false);
 
-  // const dataFormat = [
-  //   {
-  //     itemName,
-  //     price,
-  //     quantity,
-  //   },
-  // ];
+  function handleForm(e) {
+    e.preventDefault();
+
+    if (!itemName || !quantity || !price) return;
+
+    const dataFormat = {
+      itemName,
+      price,
+      quantity,
+    };
+
+    onAddItem(dataFormat);
+    console.log(dataFormat);
+
+    setItemName("");
+    setQuantity("");
+    setPrice("");
+  }
 
   return (
     <>
-      <form className="add-new-items" onSubmit={(e) => onHandleForm(e)}>
-        <label className="add-new-items-label">
-          Add new items to the Cart 😎
-        </label>
+      {isopen ? (
+        <form className="add-new-items" onSubmit={(e) => handleForm(e)}>
+          <label className="add-new-items-label">
+            Add new items to the Cart 😎
+          </label>
 
-        <div className="form-layout">
-          <label>
-            <strong>Item's name?</strong>
-          </label>
-          <input
-            type="text"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-          ></input>
-        </div>
-        <div className="form-layout">
-          <label>
-            <strong>How many?</strong>{" "}
-          </label>
-          <input
-            type="number"
-            value={howMany}
-            onChange={(e) => setHowMany(Number(e.target.value))}
-          ></input>
-        </div>
-        <div className="form-layout">
-          <label>
-            <strong>Price?</strong>
-          </label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-          ></input>
-        </div>
-        <button className="btn">Submit</button>
-      </form>
-      <button className="btn">Close</button>
+          <div className="form-layout">
+            <label>
+              <strong>Item's name?</strong>
+            </label>
+            <input
+              type="text"
+              value={itemName}
+              onChange={(e) => setItemName(e.target.value)}
+            ></input>
+          </div>
+          <div className="form-layout">
+            <label>
+              <strong>How many?</strong>{" "}
+            </label>
+            <input
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+            ></input>
+          </div>
+          <div className="form-layout">
+            <label>
+              <strong>Price?</strong>
+            </label>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value))}
+            ></input>
+          </div>
+          <button className="btn">Submit</button>
+        </form>
+      ) : (
+        ""
+      )}
+      <button className="btn" onClick={() => setIsOpen(!isopen)}>
+        {isopen ? "Close" : "Add Item"}
+      </button>
     </>
   );
 }

@@ -7,7 +7,7 @@
 
 .app {
   max-width: 300px;
-  margin: 50px auto;
+  margin: 10px auto;
 }
 
 .cart-details-section {
@@ -20,11 +20,15 @@
 }
 
 .items-list {
-  max-width: 300px;
+  max-width: 325px;
   margin: 5px auto;
   background-color: #dbb7ff;
   border-radius: 10px;
   padding: 10px;
+  margin-right: -15px;
+  max-height: 239px;
+
+  overflow-y: scroll;
 }
 
 .add-new-items {
@@ -44,7 +48,8 @@
 
 .btn {
   padding: 7px 14px;
-  margin-left: 40%;
+  margin-left: 50%;
+  transform: translate(-50%, 0%);
   border-radius: 10px;
   border: none;
   background-color: #9c9c9c;
@@ -92,4 +97,16 @@
 .add-new-items-label {
   display: flex;
   justify-content: center;
+}
+
+.empty-item-list {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.notice {
+  position: absolute;
+  left: 0;
+  bottom: 0;
 }
